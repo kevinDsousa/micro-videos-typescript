@@ -75,7 +75,19 @@ describe("Category unit test", () => {
         });
     });
 
-    describe("Fluxo de erros", () => { });
+    describe("Fluxo de erros", () => {
+        test("Deve lançar um erro se o tipo do uuid for diferente de uuid", () => {
+            const data = { props: { name: 'movie' }, id: "invalid-uuid" };
+
+        expect(() => new Category(data.props, data.id)).toThrow('Invalid UUID');
+        }); 
+
+        test("Deve lançar um erro se o nome da categoria estiver em branco", () => {
+            const data = { props: { name: '' } };
+
+            expect(() => new Category(data.props)).toThrow('Name is required');
+        });
+    });
 
     describe("Getters e Setters", () => {
         describe("Getters", () => {
