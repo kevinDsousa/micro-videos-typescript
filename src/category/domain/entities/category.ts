@@ -1,4 +1,4 @@
-import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
+import UniqueEntityID from '../../../@seedwork/domain/unique-entity-id.vo';
 
 export type CategoryProps = {
     name: string;
@@ -8,15 +8,12 @@ export type CategoryProps = {
 }
 
 export class Category {
-    public readonly id: string;
-    constructor(public readonly props: CategoryProps, id?: string) {
-        if (id) {
-            this.validateUUID(id);
-        }
+    public readonly id: UniqueEntityID;
+    constructor(public readonly props: CategoryProps, id?: UniqueEntityID) {
         if (!props.name) {
             throw new Error('Name is required');
         }
-        this.id = id || uuidv4();
+        this.id = id || new UniqueEntityID();
         this.description = this.props.description;
         this.is_active = this.props.is_active ?? true;
         this.props.created_at = this.props.created_at ?? new Date();
@@ -44,11 +41,5 @@ export class Category {
 
     get created_at(): Date {
         return this.props.created_at;
-    }
-
-    private validateUUID(id: string): void {
-        if (!uuidValidate(id)) {
-            throw new Error('Invalid UUID');
-        }
     }
 }

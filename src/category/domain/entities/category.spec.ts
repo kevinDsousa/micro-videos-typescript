@@ -1,3 +1,4 @@
+import UniqueEntityID from "../../../@seedwork/domain/unique-entity-id.vo";
 import { Category, CategoryProps } from "./category";
 import { omit } from 'lodash';
 import { validate as uuidValidate } from 'uuid';
@@ -58,30 +59,24 @@ describe("Category unit test", () => {
         });
 
         test("Deve criar uma instância de Category com campo uuid gerado", () => {
-            type CategoryData = { props: CategoryProps, id?: string };
+            type CategoryData = { props: CategoryProps, id?: UniqueEntityID };
             const data: CategoryData[] = [
                 { props: { name: 'movie' } },
                 { props: { name: 'movie' }, id: null  },
                 { props: { name: 'movie' }, id: undefined },
-                { props: { name: 'movie' }, id: "8217b002-ece4-404c-aa79-9d0ab7b2d9f3" },
+                { props: { name: 'movie' }, id: new UniqueEntityID() },
             ]
 
             data.forEach(item => {
                 const category = new Category(item.props, item.id);
 
                 expect(category.id).toBeDefined();
-                expect(uuidValidate(category.id)).toBe(true);
+                expect(category.id).toBeInstanceOf(UniqueEntityID);
             });
         });
     });
 
     describe("Fluxo de erros", () => {
-        test("Deve lançar um erro se o tipo do uuid for diferente de uuid", () => {
-            const data = { props: { name: 'movie' }, id: "invalid-uuid" };
-
-        expect(() => new Category(data.props, data.id)).toThrow('Invalid UUID');
-        }); 
-
         test("Deve lançar um erro se o nome da categoria estiver em branco", () => {
             const data = { props: { name: '' } };
 
