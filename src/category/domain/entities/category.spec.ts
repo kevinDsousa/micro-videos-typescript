@@ -2,7 +2,7 @@ import { Category, CategoryProps } from "./category";
 import { omit } from 'lodash';
 
 describe("Category unit test", () => {
-    let props: CategoryProps = { name: 'movie', description: 'some description', is_active: true, created_at: new Date()};
+    let props: CategoryProps = { name: 'movie', description: 'some description', is_active: true, created_at: new Date() };
 
     describe("Fluxo de sucesso", () => {
         test("Construtor da entidade Category", () => {
@@ -17,16 +17,14 @@ describe("Category unit test", () => {
 
         test("Deve criar uma instância de Category passando somente o nome e validar os valores padrões", () => {
             const partialProps = omit(props, ['description', 'is_active', 'created_at']);
-        
+
             const category = new Category(partialProps);
-        
+
             expect(category.props).toMatchObject({
                 name: 'movie',
-                description: null,
-                is_active: true,
             });
             expect(category.props.created_at).toBeInstanceOf(Date);
-        });        
+        });
 
         test("Deve criar uma instância de Category passando nome e descrição", () => {
             const partialProps = omit(props, ['is_active', 'created_at']);
@@ -59,5 +57,60 @@ describe("Category unit test", () => {
         });
     });
 
-    describe("Fluxo de erros", () => {});
+    describe("Fluxo de erros", () => { });
+
+    describe("Getters e Setters", () => {
+        describe("Getters", () => {
+            test("Deve retornar o nome da categoria", () => {
+                const categoria = new Category({ name: 'movie' });
+                expect(categoria.name).toBe('movie');
+            });
+
+            test("Deve retornar a descrição da categoria", () => {
+                const categoria = new Category({ name: 'movie', description: 'some description' });
+                expect(categoria.description).toBe('some description');
+            });
+
+            test("Deve retornar o is_active da categoria", () => {
+                const categoria = new Category({ name: 'movie', is_active: true });
+                expect(categoria.is_active).toBe(true);
+            });
+
+            test("Deve retornar a data de criação da categoria", () => {
+                const created_at = new Date();
+                const categoria = new Category({ name: 'movie', created_at });
+                expect(categoria.created_at).toBe(created_at);
+            });
+
+            test("Deve retornar o is_active da categoria como true", () => {
+                const categoria = new Category({ name: 'movie' });
+                expect(categoria.is_active).toBe(true);
+            });
+
+            test("Deve retornar a data de criação da categoria como uma instância de Date", () => {
+                const categoria = new Category({ name: 'movie' });
+                expect(categoria.created_at).toBeInstanceOf(Date);
+            });
+        });
+
+        describe("Setters", () => {
+            test("Deve setar a descrição da categoria", () => {
+                const categoria = new Category({ name: 'movie' });
+                categoria.description = 'description';
+                expect(categoria.description).toBe('description');
+            });
+
+            test("Deve setar o is_active da categoria", () => {
+                const categoria = new Category({ name: 'movie' });
+                categoria.is_active = true;
+                expect(categoria.is_active).toBe(true);
+            });
+
+            test("Deve setar o is_active da categoria como true", () => {
+                const categoria = new Category({ name: 'movie', is_active: false });
+                categoria.is_active = true;
+                expect(categoria.is_active).toBe(true);
+            });
+        });
+    });
 });

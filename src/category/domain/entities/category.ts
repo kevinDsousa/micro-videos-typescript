@@ -9,34 +9,31 @@ export class Category {
 
     constructor(public readonly props: CategoryProps) {
         this.description = this.props.description;
-        this.is_active = this.props.is_active;
+        this.is_active = this.props.is_active ?? true;
         this.props.created_at = this.props.created_at ?? new Date();
     }
 
-    get name (): string {
+    get name(): string {
         return this.props.name;
     }
 
-    get description (): string {
+    get description(): string {
         return this.props.description;
     }
 
-    private set description (description: string) {
-        this.props.description = this.props.description ?? null;
+    public set description(description: string) {
+        this.props.description = description;
     }
 
-    get is_active () : boolean {
+    get is_active(): boolean {
         return this.props.is_active;
     }
 
-    private set is_active (is_active: boolean) {
-        this.props.is_active = this.props.is_active ?? true;
+    public set is_active(is_active: boolean) {
+        this.props.is_active = is_active;
     }
 
-    get created_at () : Date {
+    get created_at(): Date {
         return this.props.created_at;
     }
-    
 }
-
-//create
