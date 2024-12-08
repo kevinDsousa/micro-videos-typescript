@@ -1,5 +1,6 @@
 import { Category, CategoryProps } from "./category";
 import { omit } from 'lodash';
+import { validate as uuidValidate } from 'uuid';
 
 describe("Category unit test", () => {
     let props: CategoryProps = { name: 'movie', description: 'some description', is_active: true, created_at: new Date() };
@@ -54,6 +55,23 @@ describe("Category unit test", () => {
             const category = new Category(props);
 
             expect(category.props).toStrictEqual(props);
+        });
+
+        test("Deve criar uma instância de Category com campo uuid gerado", () => {
+            type CategoryData = { props: CategoryProps, id?: string };
+            const data: CategoryData[] = [
+                { props: { name: 'movie' } },
+                { props: { name: 'movie' }, id: null  },
+                { props: { name: 'movie' }, id: undefined },
+                { props: { name: 'movie' }, id: "8217b002-ece4-404c-aa79-9d0ab7b2d9f3" },
+            ]
+
+            data.forEach(item => {
+                const category = new Category(item.props, item.id);
+
+                expect(category.id).toBeDefined();
+                expect(uuidValidate(category.id)).toBe(true);
+            });
         });
     });
 
