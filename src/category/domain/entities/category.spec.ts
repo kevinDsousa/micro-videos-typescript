@@ -1,7 +1,6 @@
 import UniqueEntityID from "../../../@seedwork/domain/unique-entity-id.vo";
 import { Category, CategoryProps } from "./category";
 import { omit } from 'lodash';
-import { validate as uuidValidate } from 'uuid';
 
 describe("Category unit test", () => {
     let props: CategoryProps = { name: 'movie', description: 'some description', is_active: true, created_at: new Date() };
