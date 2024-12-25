@@ -1,8 +1,8 @@
 export default abstract class ValueObject<Value = any> {
-  protected _value: Value;
+  protected readonly _value: Value;
 
   constructor(value: Value) {
-    this._value = value;
+    this._value = Object.freeze(value);
   }
 
   get value(): Value {
@@ -10,12 +10,14 @@ export default abstract class ValueObject<Value = any> {
   }
 
   toString = () => {
-    if (this._value === undefined || this._value === null) {
-      throw new Error('Erro ao tentar converter um objeto undefined ou null para string');
+    if (typeof this._value !== 'object' || this._value === null) {
+      return this._value.toString();
     }
-    if (typeof this._value === 'object') {
-      return JSON.stringify(this._value);
+    const hasInvalidValue = Object.values(this._value).some(value => value === undefined || value === null);
+    if (hasInvalidValue) {
+      throw new Error('Erro ao tentar converter um objeto com um valor undefined ou null para string');
     }
-    return this._value.toString();
+  
+    return JSON.stringify(this._value);
   }
 }

@@ -1,53 +1,92 @@
 import ValueObject from "../value-object";
 
-class StubValueObject extends ValueObject {
-}
+class StubValueObject extends ValueObject { }
 
-describe('Value Object Unit tests', () => {
-  describe('Sucesso', () => {
-    it('Deve setar um valor', () => {
-      let vo = new StubValueObject('string value');
-      expect(vo.value).toBe('string value');
+describe("Value Object Unit tests", () => {
+  describe("Sucesso", () => {
+    let vo: StubValueObject;
 
-      vo = new StubValueObject({prop1: 'value1'});
-      expect(vo.value).toStrictEqual({prop1: 'value1'});
+    const arrange = [
+      { value: "value", expected: "value", description: "Deve setar um valor" },
+      {
+        value: "string value",
+        expected: "string value",
+        description: "Deve retornar o valor como string",
+      },
+      {
+        value: 1,
+        expected: "1",
+        description: "Deve retornar o valor como string passando um numero",
+      },
+      {
+        value: true,
+        expected: "true",
+        description: "Deve retornar o valor como string passando um boolean",
+      },
+      {
+        value: { prop1: "value1" },
+        expected: '{"prop1":"value1"}',
+        description: "Deve retornar o valor como string passando um objeto",
+      },
+      {
+        value: [1, 2, 3],
+        expected: "[1,2,3]",
+        description: "Deve retornar o valor como string passando um array",
+      },
+    ];
+
+    arrange.forEach(({ value, expected, description }) => {
+      it(description, () => {
+        vo = new StubValueObject(value);
+        expect(vo.toString()).toBe(expected);
+      });
     });
+  });
 
-    it('Deve retornar o valor como string', () => {
-      let vo = new StubValueObject('string value');
-      expect(vo.toString()).toBe('string value');
-    });
+  describe("Falha", () => {
+    let vo: StubValueObject;
 
-    it('Deve retornar o valor como string passando um numero', () => {
-      let vo = new StubValueObject(1);
-      expect(vo.toString()).toBe('1');
-    });
+    const arrange = [
+      {
+        value: undefined,
+        description: "Deve retornar um erro ao tentar converter um objeto undefined para string",
+      },
+      {
+        value: null,
+        description: "Deve retornar um erro ao tentar converter um objeto null para string",
+      },
+      {
+        value: { prop1: undefined as any },
+        description:
+          "Deve retornar um erro ao tentar converter um objeto com um valor undefined para string",
+      },
+      {
+        value: { prop1: null },
+        description:
+          "Deve retornar um erro ao tentar converter um objeto com um valor null para string",
+      },
+    ];
 
-    it('Deve retornar o valor como string passando um boolean', () => {
-      let vo = new StubValueObject(true);
-      expect(vo.toString()).toBe('true');
-    });
-
-    it('Deve retornar o valor como string passando um objeto', () => {
-      let vo = new StubValueObject({prop1: 'value1'});
-      expect(vo.toString()).toBe('{"prop1":"value1"}');
-    });
-
-    it('Deve retornar o valor como string passando um array', () => {
-      let vo = new StubValueObject([1, 2, 3]);
-      expect(vo.toString()).toBe('[1,2,3]');
+    arrange.forEach(({ value, description }) => {
+      it(description, () => {
+        vo = new StubValueObject(value);
+        expectToThrow(vo);
+      });
     });
   });
 
-  describe('Falha', () => {
-    it('Deve retornar um erro ao tentar converter um objeto undefined para string', () => {
-      let vo = new StubValueObject(undefined);
-      expect(() => vo.toString()).toThrow();
-    });
+  describe("Imutabilidade", () => {
+    let vo: StubValueObject;
 
-    it('Deve retornar um erro ao tentar converter um objeto null para string', () => {
-      let vo = new StubValueObject(null);
-      expect(() => vo.toString()).toThrow();
+    it("Deve ser imutável", () => {
+      vo = new StubValueObject({ prop1: "value1" });
+      expect(() => {
+        (vo as any)._value = { prop2: "value2" };
+      });
     });
   });
+
+  function expectToThrow(vo: StubValueObject) {
+    expect(() => vo.toString()).toThrow();
+  }
 });
