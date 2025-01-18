@@ -1,92 +1,108 @@
 import ValueObject from "../value-object";
 
-class StubValueObject extends ValueObject { }
+class StubValueObject extends ValueObject {
+}
 
-describe("Value Object Unit tests", () => {
-  describe("Sucesso", () => {
+describe('Value Object Unit tests', () => {
+  describe('Sucesso', () => {
     let vo: StubValueObject;
 
-    const arrange = [
-      { value: "value", expected: "value", description: "Deve setar um valor" },
-      {
-        value: "string value",
-        expected: "string value",
-        description: "Deve retornar o valor como string",
-      },
-      {
-        value: 1,
-        expected: "1",
-        description: "Deve retornar o valor como string passando um numero",
-      },
-      {
-        value: true,
-        expected: "true",
-        description: "Deve retornar o valor como string passando um boolean",
-      },
-      {
-        value: { prop1: "value1" },
-        expected: '{"prop1":"value1"}',
-        description: "Deve retornar o valor como string passando um objeto",
-      },
-      {
-        value: [1, 2, 3],
-        expected: "[1,2,3]",
-        description: "Deve retornar o valor como string passando um array",
-      },
-    ];
+    it('Deve setar um valor', () => {
+      vo = new StubValueObject('value');
+      expect(vo.value).toBe('value');
+    });
 
-    arrange.forEach(({ value, expected, description }) => {
-      it(description, () => {
-        vo = new StubValueObject(value);
-        expect(vo.toString()).toBe(expected);
-      });
+    it('Deve retornar o valor como string', () => {
+      vo = new StubValueObject('string value');
+      expect(vo.toString()).toBe('string value');
+    });
+
+    it('Deve retornar o valor como string passando um numero', () => {
+      vo = new StubValueObject(1);
+      expect(vo.toString()).toBe('1');
+    });
+
+    it('Deve retornar o valor como string passando um boolean', () => {
+      vo = new StubValueObject(true);
+      expect(vo.toString()).toBe('true');
+    });
+
+    it('Deve retornar o valor como string passando um objeto', () => {
+      vo = new StubValueObject({ prop1: 'value1' });
+      expect(vo.toString()).toBe('{"prop1":"value1"}');
+    });
+
+    it('Deve retornar o valor como string passando um array', () => {
+      vo = new StubValueObject([1, 2, 3]);
+      expect(vo.toString()).toBe('[1,2,3]');
     });
   });
 
-  describe("Falha", () => {
+  describe('Falha', () => {
     let vo: StubValueObject;
 
-    const arrange = [
-      {
-        value: undefined,
-        description: "Deve retornar um erro ao tentar converter um objeto undefined para string",
-      },
-      {
-        value: null,
-        description: "Deve retornar um erro ao tentar converter um objeto null para string",
-      },
-      {
-        value: { prop1: undefined as any },
-        description:
-          "Deve retornar um erro ao tentar converter um objeto com um valor undefined para string",
-      },
-      {
-        value: { prop1: null },
-        description:
-          "Deve retornar um erro ao tentar converter um objeto com um valor null para string",
-      },
-    ];
-
-    arrange.forEach(({ value, description }) => {
-      it(description, () => {
-        vo = new StubValueObject(value);
-        expectToThrow(vo);
-      });
+    it('Deve retornar um erro ao tentar converter um objeto undefined para string', () => {
+      vo = new StubValueObject(undefined);
+      expect(() => vo.toString()).toThrow();
     });
-  });
 
-  describe("Imutabilidade", () => {
-    let vo: StubValueObject;
-
-    it("Deve ser imutável", () => {
-      vo = new StubValueObject({ prop1: "value1" });
-      expect(() => {
-        (vo as any)._value = { prop2: "value2" };
-      });
+    it('Deve retornar um erro ao tentar converter um objeto null para string', () => {
+      vo = new StubValueObject(null);
+      expect(() => vo.toString()).toThrow();
     });
-  });
 
-  function expectToThrow(vo: StubValueObject) {
-    expect(() => vo.toString()).toThrow();
-  }
+    it('Deve retornar um erro ao tentar converter um objeto com um valor undefined para string', () => {
+      vo = new StubValueObject({ prop1: undefined });
+      expect(() => vo.toString()).toThrow();
+    });
+
+    it('Deve retornar um erro ao tentar converter um objeto com um valor null para string', () => {
+      vo = new StubValueObject({ prop1: null });
+      expect(() => vo.toString()).toThrow();
+    });
+
+      it('Precisa ter um objeto imutável', () => {
+        const obj: { prop1: string; deep: { prop2: string; prop3: Date } } = deepFreeze(
+          {
+            prop1: 'value1',
+            deep: {
+              prop2: 'value2',
+              prop3: new Date
+            }
+          });
+
+        const vo = new StubValueObject(obj);
+    
+        expect(() =>
+          (vo as any).value.prop1 = "test"
+        ).toThrow(
+          "Cannot assign to read only property 'prop1' of object '#<Object>'"
+        );
+    
+        expect(() =>
+          (vo as any).value.deep.prop2 = "test"
+        ).toThrow(
+          "Cannot assign to read only property 'prop2' of object '#<Object>'"
+        );
+    
+        expect(vo.value.deep.prop3).toBeInstanceOf(Date);
+      });
+  });
 });
+function deepFreeze<T extends Record<string, any>>(obj: T): T {
+  Object.freeze(obj);
+
+  Object.getOwnPropertyNames(obj).forEach((prop) => {
+    if (
+      obj.hasOwnProperty(prop) &&
+      obj[prop] !== null &&
+      (typeof obj[prop] === "object" || typeof obj[prop] === "function") &&
+      !Object.isFrozen(obj[prop])
+    ) {
+      deepFreeze(obj[prop]);
+    }
+  });
+
+  return obj;
+}
+

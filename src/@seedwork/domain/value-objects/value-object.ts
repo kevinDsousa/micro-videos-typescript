@@ -1,8 +1,10 @@
+import { deepFreeze } from "../utils/object";
+
 export default abstract class ValueObject<Value = any> {
-  protected readonly _value: Value;
+  protected _value: Value;
 
   constructor(value: Value) {
-    this._value = Object.freeze(value);
+    this._value = deepFreeze(value);
   }
 
   get value(): Value {
