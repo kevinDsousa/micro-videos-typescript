@@ -42,4 +42,20 @@ export class Category extends Entity<CategoryProps> {
     get created_at(): Date {
         return this.props.created_at;
     }
+
+    update(name: string, description: string): void {
+        if (!name || name === '' && !description || description === '') {
+            throw new Error('Name and description are required');
+        }
+        this.props.name = name;
+        this.props.description = description;
+    }
+
+    activate(): void {
+        this.props.is_active = true;
+    }
+
+    deactivate(): void {
+        this.props.is_active = false;
+    }
 }

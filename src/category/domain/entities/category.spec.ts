@@ -61,7 +61,7 @@ describe("Category unit test", () => {
             type CategoryData = { props: CategoryProps, id?: UniqueEntityID };
             const data: CategoryData[] = [
                 { props: { name: 'movie' } },
-                { props: { name: 'movie' }, id: null  },
+                { props: { name: 'movie' }, id: null },
                 { props: { name: 'movie' }, id: undefined },
                 { props: { name: 'movie' }, id: new UniqueEntityID() },
             ]
@@ -134,6 +134,40 @@ describe("Category unit test", () => {
                 const categoria = new Category({ name: 'movie', is_active: false });
                 categoria.is_active = true;
                 expect(categoria.is_active).toBe(true);
+            });
+        });
+    });
+
+    describe("Métodos", () => {
+        describe("Sucesso", () => {
+            it("Deve testar a função activate", () => {
+                const category = new Category(props);
+                category.deactivate();
+                category.activate();
+                expect(category.is_active).toBe(true);
+            });
+
+            it("Deve testar a função deactivate", () => {
+                const category = new Category(props);
+                category.activate();
+                category.deactivate();
+                expect(category.is_active).toBe(false);
+            });
+
+            it("Deve testar a função update", () => {
+                const category = new Category(props);
+                category.update('new name', 'new description');
+                expect(category.name).toBe('new name');
+                expect(category.description).toBe('new description');
+            });
+        });
+
+        describe("Falha", () => {
+            it("Deve lançar um erro se o nome da categoria estiver em branco", () => {
+                const category = new Category(props);
+                expect(() => category.update('', 'new description')).toThrow('Name and description are required');
+                expect(() => category.update('new name', '')).toThrow('Name and description are required');
+                expect(() => category.update('', '')).toThrow('Name and description are required');
             });
         });
     });
