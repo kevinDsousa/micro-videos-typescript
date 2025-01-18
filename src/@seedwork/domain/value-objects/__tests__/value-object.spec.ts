@@ -60,5 +60,10 @@ describe('Value Object Unit tests', () => {
       vo = new StubValueObject({ prop1: null });
       expect(() => vo.toString()).toThrow();
     });
+
+    it('Deve tentar converter um objeto com um valor undefined para string e retornar o valor', () => {
+      vo = new StubValueObject({ prop1: 'value1', prop2: undefined });
+      expect(() => vo.toString()).toThrow('Erro ao tentar converter um objeto com um valor undefined ou null para string');
+    });
   });
 });

@@ -5,14 +5,14 @@ import ValueObject from './value-object';
 export default class UniqueEntityID extends ValueObject<string> {
 
   constructor(readonly id?: string) {
-    super( id || uuidv4());
+    super(id || uuidv4());
     this.validate();
   }
 
   private validate() {
     const isValid = uuidValidate(this._value);
     if (!isValid) {
-      throw new InvalidUIDError(this.id);
+      throw new InvalidUIDError(this._value);
     }
   }
 }
