@@ -70,7 +70,7 @@ describe("Category unit test", () => {
                 const category = new Category(item.props, item.id);
 
                 expect(category.id).toBeDefined();
-                expect(category.id).toBeInstanceOf(UniqueEntityID);
+                expect(category.uniqueEntityId).toBeInstanceOf(UniqueEntityID);
             });
         });
     });

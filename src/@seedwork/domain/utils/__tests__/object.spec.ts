@@ -1,4 +1,4 @@
-import { deepFreeze } from "./object";
+import { deepFreeze } from "../object";
 
 describe('objetc unit tests', () => {
   it('Não deve congelar um valor escalar', () => {
